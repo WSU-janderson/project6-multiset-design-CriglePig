@@ -32,7 +32,16 @@ Edge cases for the insert operation include the triggered rebalancing, inserting
 The AVL structure supports the insert operation by maintaining a balanced height, allowing the tree to locate keys and determine whether to increment a quantity or create a new node in `O(log n)` time. Rebalancing ensures long-term performance but introduces additional rotation steps compared to simpler structures. Because the AVL relies on lexicographical ordering of item names, all insert behavior follows that comparison rule, which constrains how items are organized in the tree.
 
 ### Remove
-...
+The remove operation decreases the quantity of an existing item by `1` using its string key. If the key is found and the quantity is greater than `1`, the quantity is simply decremented. If the quantity reaches `0`, the node is removed entirely from the AVL tree. Removing a node may require rebalancing if the deletion disrupts the AVL tree’s height balance.
+
+#### Time Complexity
+The time complexity of the remove operation is `O(log n)` because locating the key, performing the deletion, and carrying out any necessary rebalancing all involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
+
+#### Edge Cases
+Edge cases for the remove operation include attempting to remove an item that does not exist in the tree, removing the last remaining quantity of an item which requires deleting its node, and triggering AVL rebalancing when node removal alters subtree heights.
+
+#### Impact
+The AVL structure supports the remove operation by guaranteeing balanced height, allowing fast lookup and deletion in `O(log n)` time. Rebalancing maintains long-term efficiency but requires additional rotation steps when nodes are removed. Since AVL trees depend on lexicographical ordering, removal maintains this order even when nodes are deleted, ensuring consistent organization of the remaining items.
 
 ### Set Quantity
 ...
