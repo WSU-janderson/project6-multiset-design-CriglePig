@@ -20,7 +20,7 @@ Although AVL trees involve internal balancing, I believe my design may also supp
 ## Core Operations
 
 ### Insert
-The insert operation increases the quantity of an item by `1` using its `string` key. If the key is found, the existing quantity is incremented. If the key is not found, a new node is created in the AVL tree with its quantity initialized to `1`. Adding a new node may require rebalancing if the insertion disrupts the AVL tree’s height balance.
+The insert operation increases the quantity of an item by `1` using its `string` key. If the key is found, the existing quantity is incremented. If the key is not found, a new node is created in the AVL tree with its quantity initialized to `1`. Adding a new node may require rebalancing if the insertion disrupts the AVL tree’s height balance. The insert operation can be used to add items being picked up, one by one.
 
 #### Time Complexity
 The time complexity of the insert operation is `O(log n)` because both searching for the key and any required rebalancing involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
@@ -32,7 +32,7 @@ Edge cases for the insert operation include the triggered rebalancing, inserting
 The AVL structure supports the insert operation by maintaining a balanced height, allowing the tree to locate keys and determine whether to increment a quantity or create a new node in `O(log n)` time. Rebalancing ensures long-term performance but introduces additional rotation steps compared to simpler structures. Because the AVL relies on lexicographical ordering of item names, all insert behavior follows that comparison rule, which constrains how items are organized in the tree.
 
 ### Remove
-The remove operation decreases the quantity of an existing item by `1` using its `string` key. If the key is found and the quantity is greater than `1`, the quantity is simply decremented. If the quantity reaches `0`, the node is removed entirely from the AVL tree. Removing a node may require rebalancing if the deletion disrupts the AVL tree’s height balance.
+The remove operation decreases the quantity of an existing item by `1` using its `string` key. If the key is found and the quantity is greater than `1`, the quantity is simply decremented. If the quantity reaches `0`, the node is removed entirely from the AVL tree. Removing a node may require rebalancing if the deletion disrupts the AVL tree’s height balance. This can be used in Minecraft to drop individual items or to simulate an item like potions or food being consumed.
 
 #### Time Complexity
 The time complexity of the remove operation is `O(log n)` because locating the key, performing the deletion, and carrying out any necessary rebalancing all involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
@@ -54,5 +54,17 @@ Edge cases include setting the quantity of a non-existent item (should create a 
 
 #### Impact
 The AVL structure supports set quantity by providing balanced, ordered storage so updates and existence checks run in `O(log n)` time. Creating or deleting nodes triggers the same rebalancing logic as insert/remove, preserving performance. Because keys are ordered lexicographically, set-quantity behavior follows the same ordering constraints as other operations.
+
+### Get Quantity
+The get quantity operation retrieves the current quantity of an item using its `string` key. If the key exists in the AVL tree, the operation returns the stored quantity; if the key does not exist, it returns `0` to indicate that the item is not present in the inventory. This may be used in Minecraft to check the amount of an item a player has in their inventory for crafting.
+
+#### Time Complexity
+The time complexity of get quantity is `O(log n)` because the AVL tree allows searching for a key by traversing from the root down to a leaf in logarithmic time relative to the number of nodes.
+
+#### Edge Cases
+Edge cases include querying for a key that does not exist (should return `0`), or querying immediately after an insert or remove operation before rebalancing completes.
+
+#### Impact
+The AVL structure supports get quantity efficiently by maintaining a balanced height, allowing the operation to locate any key quickly. The lexicographical ordering of keys does not affect correctness but ensures that all lookups are consistent and predictable.
 
 # Conclusion
