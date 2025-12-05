@@ -31,8 +31,6 @@ Edge cases for the `insert` operation include the triggered rebalancing, inserti
 #### Impact
 The AVL structure supports the `insert` operation by maintaining a balanced height, allowing the tree to locate keys and determine whether to increment a quantity or create a new node in `O(log n)` time. Rebalancing ensures long-term performance but introduces additional rotation steps compared to simpler structures. Because the AVL relies on lexicographical ordering of item names, all `insert` behavior follows that comparison rule, which constrains how items are organized in the tree.
 
----
-
 ### Remove
 The `remove` operation decreases the quantity of an existing item by `1` using its `string` key. If the key is found and the quantity is greater than `1`, the quantity is simply decremented. If the quantity reaches `0`, the node is removed entirely from the AVL tree. Removing a node may require rebalancing if the deletion disrupts the AVL tree’s height balance. This can be used in Minecraft to drop individual items or to simulate an item like potions or food being consumed.
 
@@ -45,7 +43,6 @@ Edge cases for the `remove` operation include attempting to remove an item that 
 #### Impact
 The AVL structure supports the `remove` operation by guaranteeing balanced height, allowing fast lookup and deletion in `O(log n)` time. Rebalancing maintains long-term efficiency but requires additional rotation steps when nodes are removed. Since AVL trees depend on lexicographical ordering, removal maintains this order even when nodes are deleted, ensuring consistent organization of the remaining items.
 
----
 
 ### Set Quantity
 The `set quantity` operation assigns a specific quantity to an item using its `string` key. If the key is found, its stored quantity is replaced with the new value. If the new quantity is `0`, the node is removed from the AVL tree. If the key is not found and the new quantity is greater than `0`, a new node is created with that quantity. Creating or removing a node may require rebalancing if the update disrupts the AVL tree’s height balance. My vision for this operation in Minecraft involves using multiple items in crafting or dropping stacks of items.
@@ -58,8 +55,6 @@ Edge cases include setting the quantity of a non-existent item (should create a 
 
 #### Impact
 The AVL structure supports `set quantity` by providing balanced, ordered storage so updates and existence checks run in `O(log n)` time. Creating or deleting nodes triggers the same rebalancing logic as insert/remove, preserving performance. Because keys are ordered lexicographically, `set quantity` behavior follows the same ordering constraints as other operations.
-
----
 
 ### Get Quantity
 The `get quantity` operation retrieves the current quantity of an item using its `string` key. If the key exists in the AVL tree, the operation returns the stored quantity; if the key does not exist, it returns `0` to indicate that the item is not present in the inventory. This may be used in Minecraft to check the amount of an item a player has in their inventory for crafting.
@@ -103,6 +98,14 @@ Edge cases include insufficient ingredients to craft the recipe, recipes that cr
 
 #### Impact
 This feature directly integrates the multiset with core gameplay mechanics, making the inventory a dynamic tool for crafting. The AVL tree ensures predictable performance when checking ingredient quantities and updating the inventory after crafting.
+
+## Multiset UML Diagram
+![multisetUML diagram](multisetUML.png)
+
+## Trade-off Analysis
+For this inventory system, I chose an AVL tree for the multiset instead of a hash table. Hash tables provide fast average-case `O(1)` insert and lookup times, but they do not maintain key ordering, which makes sorted operations, range queries, and set-like behaviors harder to implement. They also require resizing and can degrade to `O(n)` performance in the worst case. The AVL tree avoids these issues by guaranteeing `O(log n)` performance for all core operations while keeping elements ordered and balanced. Although AVL trees involve more implementation complexity due to rebalancing, their predictable performance and built-in ordering make them the more suitable choice.
+
+Another reason why I chose an AVL tree for Minecraft's inventory system is to easily implement built-in lexicographical sorting in-game. I have always wanted a sort inventory button in the base game, and although alphabetical order is not my desired sorted style, as I prefer items to be sorted near related or similar items (e.g. blocks with blocks and tools with tools), it is still a great option to have.
 
 
 
