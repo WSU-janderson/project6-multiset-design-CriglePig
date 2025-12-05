@@ -87,6 +87,24 @@ Edge cases include inventories with completely disjoint sets of items, inventori
 #### Impact
 The AVL structure supports the `union` operation by maintaining fast lookups and insertions for each item in `O(log m)` time, allowing quantities from the second inventory to be combined efficiently. Rebalancing ensures that the combined inventory remains balanced, preserving predictable performance for future operations.
 
+## Extension Feature
+
+### Craft Recipe
+The `craft recipe` operation allows the player to consume a set of ingredients from their inventory to create a new item. In gameplay, this models Minecraft’s crafting system: combining items like sticks and iron ingots to make a sword or combining wood planks to make a crafting table.
+
+#### Design
+This operation would take a recipe (a mapping of required item keys to quantities), the `string` key to the intended item to be crafted, and the quantity of items crafted. Next, it will check if the player’s inventory contains enough of each ingredient. If so, it decrements the quantities for each ingredient in the AVL multiset and adds the crafted item as a new node (or increments its quantity if it already exists). Rebalancing occurs as necessary after insertions or deletions.
+
+#### Time Complexity
+Checking and updating all ingredients requires `O(r log n)` time, where `r` is the number of items in the recipe and `n` is the number of distinct items in the inventory. Each lookup, decrement, or insertion is `O(log n)` due to AVL operations.
+
+#### Edge Cases
+Edge cases include insufficient ingredients to craft the recipe, recipes that create items already at maximum stack limits, and invalid recipes (nonexistent or malformed ingredient lists).
+
+#### Impact
+This feature directly integrates the multiset with core gameplay mechanics, making the inventory a dynamic tool for crafting. The AVL tree ensures predictable performance when checking ingredient quantities and updating the inventory after crafting.
+
+
 
 
 # Conclusion
