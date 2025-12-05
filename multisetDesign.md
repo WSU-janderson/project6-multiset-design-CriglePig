@@ -3,7 +3,7 @@
 # Introduction
 
 ## Problem
-I am designing a MultiSet to support a game inventory system. This design is inspired by Minecraft’s stacked-item inventory, where identical items are grouped together and tracked by their name and quantity.
+I am designing a multiset to support a game inventory system. This design is inspired by Minecraft’s stacked-item inventory, where identical items are grouped together and tracked by their name and quantity.
 
 ## Solution
 My design models a Minecraft inventory system built atop an AVL multiset. Each node in the AVL tree stores a unique item name as a `string` key and its total quantity as an `unsigned int` value.
@@ -20,51 +20,73 @@ Although AVL trees involve internal balancing, I believe my design may also supp
 ## Core Operations
 
 ### Insert
-The insert operation increases the quantity of an item by `1` using its `string` key. If the key is found, the existing quantity is incremented. If the key is not found, a new node is created in the AVL tree with its quantity initialized to `1`. Adding a new node may require rebalancing if the insertion disrupts the AVL tree’s height balance. The insert operation can be used to add items being picked up, one by one.
+The `insert` operation increases the quantity of an item by `1` using its `string` key. If the key is found, the existing quantity is incremented. If the key is not found, a new node is created in the AVL tree with its quantity initialized to `1`. Adding a new node may require rebalancing if the insertion disrupts the AVL tree’s height balance. The `insert` operation can be used to add items being picked up, one by one.
 
 #### Time Complexity
-The time complexity of the insert operation is `O(log n)` because both searching for the key and any required rebalancing involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
+The time complexity of the `insert` operation is `O(log n)` because both searching for the key and any required rebalancing involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
 
 #### Edge Cases
-Edge cases for the insert operation include the triggered rebalancing, inserting many distinct items in rapid succession which increases tree height, and accumulating very large quantities over time which may approach the limits of a player's inventory.
+Edge cases for the `insert` operation include the triggered rebalancing, inserting many distinct items in rapid succession which increases tree height, and accumulating very large quantities over time which may approach the limits of a player's inventory.
 
 #### Impact
-The AVL structure supports the insert operation by maintaining a balanced height, allowing the tree to locate keys and determine whether to increment a quantity or create a new node in `O(log n)` time. Rebalancing ensures long-term performance but introduces additional rotation steps compared to simpler structures. Because the AVL relies on lexicographical ordering of item names, all insert behavior follows that comparison rule, which constrains how items are organized in the tree.
+The AVL structure supports the `insert` operation by maintaining a balanced height, allowing the tree to locate keys and determine whether to increment a quantity or create a new node in `O(log n)` time. Rebalancing ensures long-term performance but introduces additional rotation steps compared to simpler structures. Because the AVL relies on lexicographical ordering of item names, all `insert` behavior follows that comparison rule, which constrains how items are organized in the tree.
+
+---
 
 ### Remove
-The remove operation decreases the quantity of an existing item by `1` using its `string` key. If the key is found and the quantity is greater than `1`, the quantity is simply decremented. If the quantity reaches `0`, the node is removed entirely from the AVL tree. Removing a node may require rebalancing if the deletion disrupts the AVL tree’s height balance. This can be used in Minecraft to drop individual items or to simulate an item like potions or food being consumed.
+The `remove` operation decreases the quantity of an existing item by `1` using its `string` key. If the key is found and the quantity is greater than `1`, the quantity is simply decremented. If the quantity reaches `0`, the node is removed entirely from the AVL tree. Removing a node may require rebalancing if the deletion disrupts the AVL tree’s height balance. This can be used in Minecraft to drop individual items or to simulate an item like potions or food being consumed.
 
 #### Time Complexity
-The time complexity of the remove operation is `O(log n)` because locating the key, performing the deletion, and carrying out any necessary rebalancing all involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
+The time complexity of the `remove` operation is `O(log n)` because locating the key, performing the deletion, and carrying out any necessary rebalancing all involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
 
 #### Edge Cases
-Edge cases for the remove operation include attempting to remove an item that does not exist in the tree, removing the last remaining quantity of an item which requires deleting its node, and triggering AVL rebalancing when node removal alters subtree heights.
+Edge cases for the `remove` operation include attempting to remove an item that does not exist in the tree, removing the last remaining quantity of an item which requires deleting its node, and triggering AVL rebalancing when node removal alters subtree heights.
 
 #### Impact
-The AVL structure supports the remove operation by guaranteeing balanced height, allowing fast lookup and deletion in `O(log n)` time. Rebalancing maintains long-term efficiency but requires additional rotation steps when nodes are removed. Since AVL trees depend on lexicographical ordering, removal maintains this order even when nodes are deleted, ensuring consistent organization of the remaining items.
+The AVL structure supports the `remove` operation by guaranteeing balanced height, allowing fast lookup and deletion in `O(log n)` time. Rebalancing maintains long-term efficiency but requires additional rotation steps when nodes are removed. Since AVL trees depend on lexicographical ordering, removal maintains this order even when nodes are deleted, ensuring consistent organization of the remaining items.
+
+---
 
 ### Set Quantity
-The set quantity operation assigns a specific quantity to an item using its `string` key. If the key is found, its stored quantity is replaced with the new value. If the new quantity is `0`, the node is removed from the AVL tree. If the key is not found and the new quantity is greater than `0`, a new node is created with that quantity. Creating or removing a node may require rebalancing if the update disrupts the AVL tree’s height balance. My vision for this operation in Minecraft involves using multiple items in crafting or dropping stacks of items.
+The `set quantity` operation assigns a specific quantity to an item using its `string` key. If the key is found, its stored quantity is replaced with the new value. If the new quantity is `0`, the node is removed from the AVL tree. If the key is not found and the new quantity is greater than `0`, a new node is created with that quantity. Creating or removing a node may require rebalancing if the update disrupts the AVL tree’s height balance. My vision for this operation in Minecraft involves using multiple items in crafting or dropping stacks of items.
 
 #### Time Complexity
-The time complexity of set quantity is `O(log n)` because locating the key, inserting or deleting a node when necessary, and any required rebalancing all traverse the AVL tree’s height, which is logarithmic relative to the number of nodes.
+The time complexity of `set quantity` is `O(log n)` because locating the key, inserting or deleting a node when necessary, and any required rebalancing all traverse the AVL tree’s height, which is logarithmic relative to the number of nodes.
 
 #### Edge Cases
 Edge cases include setting the quantity of a non-existent item (should create a node if the quantity > 0), setting the quantity to `0` (which deletes the node), and assigning extremely large values that could exceed numeric limits.
 
 #### Impact
-The AVL structure supports set quantity by providing balanced, ordered storage so updates and existence checks run in `O(log n)` time. Creating or deleting nodes triggers the same rebalancing logic as insert/remove, preserving performance. Because keys are ordered lexicographically, set-quantity behavior follows the same ordering constraints as other operations.
+The AVL structure supports `set quantity` by providing balanced, ordered storage so updates and existence checks run in `O(log n)` time. Creating or deleting nodes triggers the same rebalancing logic as insert/remove, preserving performance. Because keys are ordered lexicographically, `set quantity` behavior follows the same ordering constraints as other operations.
+
+---
 
 ### Get Quantity
-The get quantity operation retrieves the current quantity of an item using its `string` key. If the key exists in the AVL tree, the operation returns the stored quantity; if the key does not exist, it returns `0` to indicate that the item is not present in the inventory. This may be used in Minecraft to check the amount of an item a player has in their inventory for crafting.
+The `get quantity` operation retrieves the current quantity of an item using its `string` key. If the key exists in the AVL tree, the operation returns the stored quantity; if the key does not exist, it returns `0` to indicate that the item is not present in the inventory. This may be used in Minecraft to check the amount of an item a player has in their inventory for crafting.
 
 #### Time Complexity
-The time complexity of get quantity is `O(log n)` because the AVL tree allows searching for a key by traversing from the root down to a leaf in logarithmic time relative to the number of nodes.
+The time complexity of `get quantity` is `O(log n)` because the AVL tree allows searching for a key by traversing from the root down to a leaf in logarithmic time relative to the number of nodes.
 
 #### Edge Cases
 Edge cases include querying for a key that does not exist (should return `0`), or querying immediately after an insert or remove operation before rebalancing completes.
 
 #### Impact
-The AVL structure supports get quantity efficiently by maintaining a balanced height, allowing the operation to locate any key quickly. The lexicographical ordering of keys does not affect correctness but ensures that all lookups are consistent and predictable.
+The AVL structure supports `get quantity` efficiently by maintaining a balanced height, allowing the operation to locate any key quickly. The lexicographical ordering of keys does not affect correctness but ensures that all lookups are consistent and predictable.
+
+## Set Operations
+
+### Union
+The `union` operation combines two inventories by summing the quantities of each item. In gameplay, this could be used when a player loots all items from a chest with a hotkey ensuring that all items are accounted for without duplication of keys. Conceptually, the operation iterates over the items in the second inventory and inserts them into the first AVL multiset. If a key already exists, its quantity is incremented by the amount from the other inventory; otherwise, a new node is created. After each insertion, rebalancing may occur to maintain AVL tree balance.
+
+#### Time Complexity
+The operation has `O(n log m)` complexity, where `n` is the number of items in the second inventory and `m` is the number of items in the first, because each insertion involves a logarithmic AVL operation. 
+
+#### Edge Cases
+Edge cases include inventories with completely disjoint sets of items, inventories with extremely large quantities that could exceed storage limits, and empty inventories.
+
+#### Impact
+The AVL structure supports the `union` operation by maintaining fast lookups and insertions for each item in `O(log m)` time, allowing quantities from the second inventory to be combined efficiently. Rebalancing ensures that the combined inventory remains balanced, preserving predictable performance for future operations.
+
+
 
 # Conclusion
