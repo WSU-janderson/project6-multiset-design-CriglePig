@@ -90,6 +90,22 @@ The `craftRecipe()` operation allows the player to consume a set of ingredients 
 #### Design
 This operation would take a recipe (a mapping of required item keys to quantities), the `string` key to the intended item to be crafted, and the quantity of items crafted. Next, it will check if the player’s inventory contains enough of each ingredient. If so, it decrements the quantities for each ingredient in the AVL multiset and adds the crafted item as a new node (or increments its quantity if it already exists). Rebalancing occurs as necessary after insertions or deletions.
 
+    function craftRecipe(recipe, resultItem, resultQty)
+        // Check if all ingredients are available
+        for each (item, reqQty) in recipe
+            if getQuantity(item) < reqQty
+                return false  // Not enough ingredients
+    
+        // Consume ingredients
+        for each (item, reqQty) in recipe
+            setQuantity(item, getQuantity(item) - reqQty)
+    
+        // Add crafted output
+        setQuantity(resultItem, getQuantity(resultItem) + resultQty)
+    
+        return true
+
+
 #### Time Complexity
 Checking and updating all ingredients requires `O(r log n)` time, where `r` is the number of items in the recipe and `n` is the number of distinct items in the inventory. Each lookup, decrement, or insertion is `O(log n)` due to AVL operations. [1, 2]
 
@@ -107,10 +123,10 @@ For this inventory system, I chose an AVL tree for the multiset instead of a has
 
 Another reason why I chose an AVL tree for Minecraft's inventory system is to easily implement built-in lexicographical sorting in-game. I have always wanted a sort inventory button in the base game, and although alphabetical order is not my desired sorted style, as I prefer items to be sorted near related or similar items (e.g. blocks with blocks and tools with tools), it is still a great option to have.
 
-| Data Structure | Advantages                                                                                           | Disadvantages                                                                                            | Key Operation Complexity                                                                                              |
-| -------------- |------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| AVL Tree       | Maintains sorted order; predictable `O(log n)` performance; supports range and set operations [1, 2] | Slightly more complex implementation; rotations required for rebalancing [2]                             | Insert: `O(log n)` <br/> Remove: `O(log n)` <br/> Search: `O(log n)` [1, 2]                                           |
-| Hash Table     | Very fast average-case insert/lookup `O(1)`; simple conceptual model [1, 2]                          | No inherent ordering; worst-case `O(n)`; resizing required; harder to implement range/set operations [2] | Insert: `O(1)` avg, `O(n)` worst <br/> Remove: `O(1)` avg, `O(n)` worst <br/> Search: `O(1)` avg, `O(n)` worst [1, 2] |
+| Data Structure | Advantages                                                                                           | Disadvantages                                                                                            | Key Operation Complexity                                                                                                    |
+| -------------- |------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| AVL Tree       | Maintains sorted order; predictable `O(log n)` performance; supports range and set operations [1, 2] | Slightly more complex implementation; rotations required for rebalancing [2]                             | Insert: `O(log n)` <br/> Remove: `O(log n)` <br/> Search: `O(log n)` <br/> [1, 2]                                           |
+| Hash Table     | Very fast average-case insert/lookup `O(1)`; simple conceptual model [1, 2]                          | No inherent ordering; worst-case `O(n)`; resizing required; harder to implement range/set operations [2] | Insert: `O(1)` avg, `O(n)` worst <br/> Remove: `O(1)` avg, `O(n)` worst <br/> Search: `O(1)` avg, `O(n)` worst <br/> [1, 2] |
 
 
 ## Alternative Design Sketch
