@@ -85,7 +85,7 @@ The AVL structure supports the `union` operation by maintaining fast lookups and
 ## Extension Feature
 
 ### Craft Recipe
-The `craft recipe` operation allows the player to consume a set of ingredients from their inventory to create a new item. In gameplay, this models Minecraft’s crafting system: combining items like sticks and iron ingots to make a sword or combining wood planks to make a crafting table.
+The `craft recipe` operation allows the player to consume a set of ingredients from their inventory to create a new item. In gameplay, this could model Minecraft’s in-inventory crafting system (e.g. combining four wood planks to create a crafting table or combining coal with sticks to make torches). I think that in-inventory crafting is well within the scope of an inventory built on a multiset but implementing this operation in crafting done on a crafting table could be overstepping some boundaries.
 
 #### Design
 This operation would take a recipe (a mapping of required item keys to quantities), the `string` key to the intended item to be crafted, and the quantity of items crafted. Next, it will check if the player’s inventory contains enough of each ingredient. If so, it decrements the quantities for each ingredient in the AVL multiset and adds the crafted item as a new node (or increments its quantity if it already exists). Rebalancing occurs as necessary after insertions or deletions.
@@ -107,7 +107,16 @@ For this inventory system, I chose an AVL tree for the multiset instead of a has
 
 Another reason why I chose an AVL tree for Minecraft's inventory system is to easily implement built-in lexicographical sorting in-game. I have always wanted a sort inventory button in the base game, and although alphabetical order is not my desired sorted style, as I prefer items to be sorted near related or similar items (e.g. blocks with blocks and tools with tools), it is still a great option to have.
 
+## Alternative Design Sketch
+If the inventory were built on a hash table instead of an AVL tree, inserts, lookups, and crafting checks would use constant-time bucket access rather than ordered traversal. The structure would be simpler since no balancing or height maintenance is required. However, any feature that depends on sorted keys, such as lexicographic displays, range queries, or producing consistently ordered ingredient lists, would require manually collecting and sorting keys, since a hash table provides no inherent ordering.
 
+## Evaluation Plan
+To test the MultiSet design, I would use unit tests that verify all core operations (`insert`, `remove`, `getQuantity`, and `union`) including edge cases like duplicate inserts, removing to zero, empty inventories, and nonexistent keys. I would also confirm AVL correctness by checking balance factors and ensuring that in-order traversal always produces sorted keys.
 
+The `craftRecipe()` feature would be tested with valid recipes, missing ingredient cases, and inventories lacking required keys to ensure quantities update correctly and crafted items are added as expected.
+
+Performance would be evaluated by timing operations on increasingly large inventories to confirm logarithmic behavior, as well as testing with randomized inserts and deletes.
+
+To evaluate extensibility and maintainability, I would test whether new operations or recipes can be added without changing existing code. A robust design shows clear separation of responsibilities, minimal repeated logic, and ensures existing features continue to work correctly when new features are introduced.
 
 # Conclusion
