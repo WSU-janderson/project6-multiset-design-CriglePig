@@ -23,7 +23,7 @@ Although AVL trees involve internal balancing, I believe my design may also supp
 The `insert()` operation increases the quantity of an item by `1` using its `string` key. If the key is found, the existing quantity is incremented. If the key is not found, a new node is created in the AVL tree with its quantity initialized to `1`. Adding a new node may require rebalancing if the insertion disrupts the AVL tree’s height balance. The `insert()` operation can be used to add items being picked up, one by one.
 
 #### Time Complexity
-The time complexity of the `insert()` operation is `O(log n)` because both searching for the key and any required rebalancing involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
+The time complexity of the `insert()` operation is `O(log n)` because both searching for the key and any required rebalancing involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes. [1, 2]
 
 #### Edge Cases
 Edge cases for the `insert()` operation include the triggered rebalancing, inserting many distinct items in rapid succession which increases tree height, and accumulating very large quantities over time which may approach the limits of a player's inventory.
@@ -35,7 +35,7 @@ The AVL structure supports the `insert()` operation by maintaining a balanced he
 The `remove()` operation decreases the quantity of an existing item by `1` using its `string` key. If the key is found and the quantity is greater than `1`, the quantity is simply decremented. If the quantity reaches `0`, the node is removed entirely from the AVL tree. Removing a node may require rebalancing if the deletion disrupts the AVL tree’s height balance. This can be used in Minecraft to drop individual items or to simulate an item like potions or food being consumed.
 
 #### Time Complexity
-The time complexity of the `remove()` operation is `O(log n)` because locating the key, performing the deletion, and carrying out any necessary rebalancing all involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes.
+The time complexity of the `remove()` operation is `O(log n)` because locating the key, performing the deletion, and carrying out any necessary rebalancing all involve traversing the height of the AVL tree, which remains logarithmic relative to the number of nodes. [1, 2]
 
 #### Edge Cases
 Edge cases for the `remove()` operation include attempting to remove an item that does not exist in the tree, removing the last remaining quantity of an item which requires deleting its node, and triggering AVL rebalancing when node removal alters subtree heights.
@@ -48,7 +48,7 @@ The AVL structure supports the `remove()` operation by guaranteeing balanced hei
 The `setQuantity` operation assigns a specific quantity to an item using its `string` key. If the key is found, its stored quantity is replaced with the new value. If the new quantity is `0`, the node is removed from the AVL tree. If the key is not found and the new quantity is greater than `0`, a new node is created with that quantity. Creating or removing a node may require rebalancing if the update disrupts the AVL tree’s height balance. My vision for this operation in Minecraft involves using multiple items in crafting or dropping stacks of items.
 
 #### Time Complexity
-The time complexity of `setQuantity` is `O(log n)` because locating the key, inserting or deleting a node when necessary, and any required rebalancing all traverse the AVL tree’s height, which is logarithmic relative to the number of nodes.
+The time complexity of `setQuantity` is `O(log n)` because locating the key, inserting or deleting a node when necessary, and any required rebalancing all traverse the AVL tree’s height, which is logarithmic relative to the number of nodes. [1, 2]
 
 #### Edge Cases
 Edge cases include setting the quantity of a non-existent item (should create a node if the quantity > 0), setting the quantity to `0` (which deletes the node), and assigning extremely large values that could exceed numeric limits.
@@ -60,7 +60,7 @@ The AVL structure supports `setQuantity()` by providing balanced, ordered storag
 The `getQuantity()` operation retrieves the current quantity of an item using its `string` key. If the key exists in the AVL tree, the operation returns the stored quantity; if the key does not exist, it returns `0` to indicate that the item is not present in the inventory. This may be used in Minecraft to check the amount of an item a player has in their inventory for crafting.
 
 #### Time Complexity
-The time complexity of `getQuantity()` is `O(log n)` because the AVL tree allows searching for a key by traversing from the root down to a leaf in logarithmic time relative to the number of nodes.
+The time complexity of `getQuantity()` is `O(log n)` because the AVL tree allows searching for a key by traversing from the root down to a leaf in logarithmic time relative to the number of nodes. [1, 2]
 
 #### Edge Cases
 Edge cases include querying for a key that does not exist (should return `0`), or querying immediately after an insert or remove operation before rebalancing completes.
@@ -74,7 +74,7 @@ The AVL structure supports `getQuantity()` efficiently by maintaining a balanced
 The `union()` operation combines two inventories by summing the quantities of each item. In gameplay, this could be used when a player loots all items from a chest with a hotkey ensuring that all items are accounted for without duplication of keys. Conceptually, the operation iterates over the items in the second inventory and inserts them into the first AVL multiset. If a key already exists, its quantity is incremented by the amount from the other inventory; otherwise, a new node is created. After each insertion, rebalancing may occur to maintain AVL tree balance.
 
 #### Time Complexity
-The operation has `O(n log m)` complexity, where `n` is the number of items in the second inventory and `m` is the number of items in the first, because each insertion involves a logarithmic AVL operation. 
+The operation has `O(n log m)` complexity, where `n` is the number of items in the second inventory and `m` is the number of items in the first, because each insertion involves a logarithmic AVL operation. [1, 2]
 
 #### Edge Cases
 Edge cases include inventories with completely disjoint sets of items, inventories with extremely large quantities that could exceed storage limits, and empty inventories.
@@ -91,7 +91,7 @@ The `craftRecipe()` operation allows the player to consume a set of ingredients 
 This operation would take a recipe (a mapping of required item keys to quantities), the `string` key to the intended item to be crafted, and the quantity of items crafted. Next, it will check if the player’s inventory contains enough of each ingredient. If so, it decrements the quantities for each ingredient in the AVL multiset and adds the crafted item as a new node (or increments its quantity if it already exists). Rebalancing occurs as necessary after insertions or deletions.
 
 #### Time Complexity
-Checking and updating all ingredients requires `O(r log n)` time, where `r` is the number of items in the recipe and `n` is the number of distinct items in the inventory. Each lookup, decrement, or insertion is `O(log n)` due to AVL operations.
+Checking and updating all ingredients requires `O(r log n)` time, where `r` is the number of items in the recipe and `n` is the number of distinct items in the inventory. Each lookup, decrement, or insertion is `O(log n)` due to AVL operations. [1, 2]
 
 #### Edge Cases
 Edge cases include insufficient ingredients to craft the recipe, recipes that create items already at maximum stack limits, and invalid recipes (nonexistent or malformed ingredient lists).
@@ -103,9 +103,15 @@ This feature directly integrates the multiset with core gameplay mechanics, maki
 ![multisetUML diagram](multisetUML.png)
 
 ## Trade-off Analysis
-For this inventory system, I chose an AVL tree for the multiset instead of a hash table. Hash tables provide fast average-case `O(1)` insert and lookup times, but they do not maintain key ordering, which makes sorted operations, range queries, and set-like behaviors harder to implement. They also require resizing and can degrade to `O(n)` performance in the worst case. The AVL tree avoids these issues by guaranteeing `O(log n)` performance for all core operations while keeping elements ordered and balanced. Although AVL trees involve more implementation complexity due to rebalancing, their predictable performance and built-in ordering make them the more suitable choice.
+For this inventory system, I chose an AVL tree for the multiset instead of a hash table. Hash tables provide fast average-case `O(1)` insert and lookup times, but they do not maintain key ordering, which makes sorted operations, range queries, and set-like behaviors harder to implement [2]. They also require resizing and can degrade to `O(n)` performance in the worst case. The AVL tree avoids these issues by guaranteeing `O(log n)` performance for all core operations while keeping elements ordered and balanced. Although AVL trees involve more implementation complexity due to rebalancing, their predictable performance and built-in ordering make them the more suitable choice. [1]
 
 Another reason why I chose an AVL tree for Minecraft's inventory system is to easily implement built-in lexicographical sorting in-game. I have always wanted a sort inventory button in the base game, and although alphabetical order is not my desired sorted style, as I prefer items to be sorted near related or similar items (e.g. blocks with blocks and tools with tools), it is still a great option to have.
+
+| Data Structure | Advantages                                                                                           | Disadvantages                                                                                            | Key Operation Complexity                                                                                              |
+| -------------- |------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| AVL Tree       | Maintains sorted order; predictable `O(log n)` performance; supports range and set operations [1, 2] | Slightly more complex implementation; rotations required for rebalancing [2]                             | Insert: `O(log n)` <br/> Remove: `O(log n)` <br/> Search: `O(log n)` [1, 2]                                           |
+| Hash Table     | Very fast average-case insert/lookup `O(1)`; simple conceptual model [1, 2]                          | No inherent ordering; worst-case `O(n)`; resizing required; harder to implement range/set operations [2] | Insert: `O(1)` avg, `O(n)` worst <br/> Remove: `O(1)` avg, `O(n)` worst <br/> Search: `O(1)` avg, `O(n)` worst [1, 2] |
+
 
 ## Alternative Design Sketch
 If the inventory were built on a hash table instead of an AVL tree, inserts, lookups, and crafting checks would use constant-time bucket access rather than ordered traversal. The structure would be simpler since no balancing or height maintenance is required. However, any feature that depends on sorted keys, such as lexicographic displays, range queries, or producing consistently ordered ingredient lists, would require manually collecting and sorting keys, since a hash table provides no inherent ordering.
@@ -125,3 +131,7 @@ This multiset design models a Minecraft inventory using an AVL tree, providing e
 The main trade-off is accepting the extra complexity of AVL rotations for guaranteed ordering and balanced performance, compared to simpler structures like hash tables. Future improvements could include custom sorting of related item groups or handling, sure-proofing max inventory is never exceeded, and adding more core functions like `isEmpty()`.
 
 The design demonstrates abstraction by exposing only high-level inventory operations, encapsulation by hiding node and balancing details, and composition by building features like crafting on top of the core AVL multiset. These principles make the system modular, maintainable, and extensible for new inventory mechanics.
+
+# Sources
+[1] S. Jain, “Time complexities of different data structures,” GeeksforGeeks, https://www.geeksforgeeks.org/dsa/time-complexities-of-different-data-structures/ (accessed Dec. 5, 2025).
+[2] “Advantages of BST over hash table,” GeeksforGeeks, https://www.geeksforgeeks.org/dsa/advantages-of-bst-over-hash-table/ (accessed Dec. 5, 2025).
